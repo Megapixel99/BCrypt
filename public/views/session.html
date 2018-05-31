@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--   -->
+<html>
+  <head>
+    <title>Ajax</title>
+    <meta charset="utf-8"/>
+    <style type="text/css">
+
+    </style>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  </head>
+
+  <body>
+<h1 id="session">Session</h1>
+
+<div id="logout">
+    <input id="logout" type="button" value="Logout" />
+</div>
+<br>
+</br>
+Ident: <input id="ident" type="text" value="" />
+<br>
+<input id="create" type="button" value="Create" onClick="CreateDataEntry()"/>
+<br>
+</br>
+<select id="select">
+</select>
+<br>
+</br>
+<input id="display" type="button" value="Display" onClick="ShowDisplay()"/>
+
+<ul id="list"></ul>
+
+
+<script src="js/session.js"></script>
+<script>
+
+  function success(data) {
+
+    $("#list").empty();
+    for (var i = 0; i < data.info.length; i++) {
+      var tempstr = "" + data.info[i].player.FirstName + "-" + data.info[i].player.LastName + "";
+      tempstr = tempstr.toLowerCase();
+      if (tempstr == $("#select option:selected").val())
+      {
+        $("#list").append("<li>" + data.info[i].player.FirstName + " " + data.info[i].player.LastName + "</li>");
+      }
+    }
+
+  }
+  function success2(data) {
+    for (var i = 0; i < data.length; i++) {
+      console.log(data[i].team.name);
+    }
+
+  }
+
+//stats[i].stats.Pts['#text']
+function CreateDataEntry() {
+  $.get("/session/nba", success2);
+
+  $("#select").append("<option>" + $("#ident").val() + "</option>");
+
+    $.post("/save",{ident:$("#ident").val()},function(data){});
+}
+
+
+  function displayClicked(){
+//send an HTTP get request and get a result back.
+  $.get("/session/nba", success);
+  return false;
+}
+
+  $(document).ready(function(){
+    $("#display").click(displayClicked);
+
+  });
+</script>
+</body>
+</html>
